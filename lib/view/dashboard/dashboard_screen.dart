@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/view/home/home_screen.dart';
+import 'package:movie_app/view/search/search_screen.dart';
 
 class DashbordScreen extends StatelessWidget {
   DashbordScreen({super.key});
   final controller = Get.put(DashbordController());
   final List<Widget> screens = [
-    HomeScreen(), const Text('search'),
+    HomeScreen(), SearchScreen(),
     const Text('favorit'),
     const Text('profiel')
     // HomeScreen(),

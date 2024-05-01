@@ -34,6 +34,15 @@ class MovieController extends GetxController {
     }
   }
 
+  RxList<AllMovies> filterlist = RxList<AllMovies>([]);
+  filterMoviesByTitle(String searchTerm) {
+    // Lowercase both the search term and movie titles for case-insensitive search
+    searchTerm = searchTerm.toLowerCase();
+    filterlist = movies
+        .where((movie) => movie.title.toLowerCase().contains(searchTerm))
+        .toList() as RxList<AllMovies>;
+  }
+
   Future<void> getGenreNames() async {
     final apiKey = dotenv.env['API_KEY'];
     final url = Uri.parse('$genresUrl$apiKey&language=en-US');
