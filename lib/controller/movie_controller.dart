@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -34,15 +33,6 @@ class MovieController extends GetxController {
     }
   }
 
-  RxList<AllMovies> filterlist = RxList<AllMovies>([]);
-  filterMoviesByTitle(String searchTerm) {
-    // Lowercase both the search term and movie titles for case-insensitive search
-    searchTerm = searchTerm.toLowerCase();
-    filterlist = movies
-        .where((movie) => movie.title.toLowerCase().contains(searchTerm))
-        .toList() as RxList<AllMovies>;
-  }
-
   Future<void> getGenreNames() async {
     final apiKey = dotenv.env['API_KEY'];
     final url = Uri.parse('$genresUrl$apiKey&language=en-US');
@@ -70,20 +60,62 @@ class MovieController extends GetxController {
     return genreNames;
   }
 
-  Future<String> fetchMovieDetails(int movieId) async {
+ 
+  Future<String> getTrailerKey(int movieId) async {
     final apiKey = dotenv.env['API_KEY'];
 
     final videoResponse = await http.get(
         Uri.parse('$videoUrl/$movieId/videos?api_key=$apiKey&language=en-US'));
     if (videoResponse.statusCode == 200) {
       final videoData = jsonDecode(videoResponse.body);
-      final result = videoData['results'][0]['key'];
-      log(result.toString());
-      // return videos;
-      return result;
+      List<Videos> videoList = (videoData['results'] as List)
+          .map((json) => Videos.fromJson(json))
+          .toList();
+
+      // Return the key of the first trailer directly
+      return videoList.firstWhere((video) => video.type == 'Trailer').key;
     } else {
-      // Handle error, e.g., throw an exception or log the error
+      // Handle error
       throw Exception('Failed to fetch movie details');
     }
   }
+}
+
+class Videos {
+  final String iso6391;
+  final String iso31661;
+  final String name;
+  final String key;
+  final String site;
+  final int size;
+  final String type;
+  final bool official;
+  final DateTime publishedAt;
+  final String id;
+
+  Videos({
+    required this.iso6391,
+    required this.iso31661,
+    required this.name,
+    required this.key,
+    required this.site,
+    required this.size,
+    required this.type,
+    required this.official,
+    required this.publishedAt,
+    required this.id,
+  });
+
+  factory Videos.fromJson(Map<String, dynamic> json) => Videos(
+        iso6391: json['iso_639_1'] as String,
+        iso31661: json['iso_3166_1'] as String,
+        name: json['name'] as String,
+        key: json['key'] as String,
+        site: json['site'] as String,
+        size: json['size'] as int,
+        type: json['type'] as String,
+        official: json['official'] as bool,
+        publishedAt: DateTime.parse(json['published_at'] as String),
+        id: json['id'] as String,
+      );
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +7,7 @@ import 'package:movie_app/controller/movie_controller.dart';
 import 'package:movie_app/model/all_movies_model_class.dart';
 import 'package:movie_app/utils/app_const.dart';
 import 'package:movie_app/view/player/player_screen.dart';
+import 'package:movie_app/view/ticket/ticket_screen.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
   final List<String> genres;
@@ -73,16 +76,19 @@ class MovieDetailsScreen extends StatelessWidget {
                         CustomButton(
                           title: 'Get Ticket',
                           backgroundColor: const Color(0xff61C3F2),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(() => TicketScreen(title: movie.title, date: movie.releaseDate,));
+                          },
                         ),
                         CustomButton(
                           title: 'Watch Trailer',
                           onPressed: () async {
-                            final videoId =
-                                await controller.fetchMovieDetails(movie.id);
+                            final key =
+                                await controller.getTrailerKey(movie.id);
                             Get.to(() => PlayScreen(
-                                  videoId: videoId,
+                                  videoId: key,
                                 ));
+                            log(key);
                           },
                         )
                       ],

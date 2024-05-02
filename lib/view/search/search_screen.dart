@@ -1,25 +1,25 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/controller/movie_controller.dart';
+import 'package:movie_app/controller/search_controller.dart';
 import 'package:movie_app/view/cards/main_movie_card.dart';
+import 'package:movie_app/view/cards/search_movie_card.dart';
+import 'package:movie_app/view/search/search_results_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  SearchScreen({super.key});
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final controller = Get.put(MovieController());
+  final searchController = TextEditingController();
+  final controller = Get.put(MovieSearchController());
   bool isSearch = false;
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -27,28 +27,41 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: 40,
+                height: 50,
                 child: TextFormField(
-                  onChanged: (value) {
-                    controller.filterMoviesByTitle(value);
-                    setState(() {});
+                  controller: searchController,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (text) {
+                    // Perform your action here, e.g., validate or submit the text
+                    controller.searchMovie(searchController.text);
+                    Get.to(() => SearchResultScreen());
+                  },
+                  onChanged: (val) {
+                    controller.searchMovie(val);
                   },
                   onTap: () {
-                    isSearch = !isSearch;
-                    setState(() {});
+                    setState(() {
+                      isSearch = true;
+                    });
                   },
-                  style: const TextStyle(color: Color(0xffFFFFFF)),
                   decoration: InputDecoration(
                       suffixIcon: isSearch ? null : const Icon(Icons.search),
                       prefix: const Icon(Icons.search),
                       suffix: IconButton(
                           onPressed: () {
+                            isSearch = false;
+                            setState(() {
+                              isSearch = false;
+                            });
                             FocusScope.of(context).unfocus();
+                            searchController.clear();
+                            controller.searchList.clear();
                           },
                           icon: const Icon(Icons.cancel)),
                       hintStyle: const TextStyle(color: Color(0xffFFFFFF)),
                       isDense: true,
                       filled: true,
+                      // contentPadding: EdgeInsets.zero,
                       fillColor: const Color(0xffEFEFEF),
                       border: OutlineInputBorder(
                           borderSide: BorderSide.none,
@@ -60,39 +73,28 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               Flexible(
                 child: isSearch
-                    ? Obx(
-                        () => ListView.builder(
-                            itemCount: controller.filterlist.length,
+                    ? GetBuilder<MovieSearchController>(
+                        builder: (con) => ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: controller.searchList.length,
                             itemBuilder: (context, index) {
-                              final filterlist = controller.filterlist;
-                              return ListTile(
-                                leading: CachedNetworkImage(
-                                  key: UniqueKey(),
-                                  height: size.height * 0.25,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                  imageUrl: '${filterlist[index].posterPath}',
-                                  placeholder: (context, url) => Center(
-                                    child: Icon(
-                                      Icons.image,
-                                      size: size.height * 0.1,
-                                    ),
-                                  ),
-                                ),
-                              );
+                              final list = controller.searchList;
+                              return SearchMovieCard(movie: list[index]);
                             }),
                       )
-                    : GridView.builder(
-                        shrinkWrap: true,
-                        itemCount: controller.movies.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 4.0,
-                                mainAxisSpacing: 4.0),
-                        itemBuilder: (BuildContext context, int index) {
-                          return MainMovieCard(movie: controller.movies[index]);
-                        }),
+                    : GetBuilder<MovieController>(
+                        builder: (con) => GridView.builder(
+                            shrinkWrap: true,
+                            itemCount: con.movies.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 4.0,
+                                    mainAxisSpacing: 4.0),
+                            itemBuilder: (BuildContext context, int index) {
+                              return MainMovieCard(movie: con.movies[index]);
+                            }),
+                      ),
               )
             ],
           ),

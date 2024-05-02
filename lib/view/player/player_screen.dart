@@ -12,11 +12,11 @@ class PlayScreen extends StatelessWidget {
       initialVideoId: videoId,
       flags: const YoutubePlayerFlags(
         autoPlay: true,
-        mute: true,
       ),
     );
 
     return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

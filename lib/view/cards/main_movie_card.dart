@@ -7,7 +7,6 @@ class MainMovieCard extends StatelessWidget {
   const MainMovieCard({super.key, required this.movie});
 
   final AllMovies movie;
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

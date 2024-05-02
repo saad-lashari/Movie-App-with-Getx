@@ -7,7 +7,7 @@ class DashbordScreen extends StatelessWidget {
   DashbordScreen({super.key});
   final controller = Get.put(DashbordController());
   final List<Widget> screens = [
-    HomeScreen(), SearchScreen(),
+    HomeScreen(), const SearchScreen(),
     const Text('favorit'),
     const Text('profiel')
     // HomeScreen(),
