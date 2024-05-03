@@ -30,4 +30,16 @@ class AllMovies {
         genreIds: (json['genre_ids'] as List).cast<int>(),
         releaseDate: json['release_date'] as String,
       );
+
+  // Added toJson method
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'original_title': originalTitle,
+        'overview': overview,
+        'poster_path': posterPath,
+        'backdrop_path': backdropPath,
+        'genre_ids': genreIds,
+        'release_date': releaseDate,
+      };
 }

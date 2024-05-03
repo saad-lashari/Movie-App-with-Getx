@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/test.dart';
 import 'package:movie_app/view/home/home_screen.dart';
 import 'package:movie_app/view/search/search_screen.dart';
 
@@ -8,13 +7,10 @@ class DashbordScreen extends StatelessWidget {
   DashbordScreen({super.key});
   final controller = Get.put(DashbordController());
   final List<Widget> screens = [
-    HomeScreen(), const SearchScreen(),
-    TestScreen(), const Text('profiel')
-    // HomeScreen(),
-    // SearchScreen(),
-    // AddScreen(),
-    // NotificationsScreen(),
-    // SettingsScreen(),
+    HomeScreen(),
+    const SearchScreen(),
+    const Text('Favorite'),
+    const Text('profiel')
   ];
   @override
   Widget build(BuildContext context) {
