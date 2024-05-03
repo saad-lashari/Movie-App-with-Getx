@@ -1,4 +1,3 @@
-import 'package:movie_app/model/date_model_class.dart';
 import 'package:movie_app/model/all_movies_model_class.dart';
 
 class MovieResponse {
@@ -6,14 +5,12 @@ class MovieResponse {
   final int totalResults;
   final int totalPages;
   final List<AllMovies> results;
-  final Dates dates;
 
   MovieResponse({
     required this.page,
     required this.totalResults,
     required this.totalPages,
     required this.results,
-    required this.dates,
   });
 
   factory MovieResponse.fromJson(Map<String, dynamic> json) => MovieResponse(
@@ -23,6 +20,5 @@ class MovieResponse {
         results: (json['results'] as List)
             .map((movieJson) => AllMovies.fromJson(movieJson))
             .toList(),
-        dates: Dates.fromJson(json['dates']),
       );
 }

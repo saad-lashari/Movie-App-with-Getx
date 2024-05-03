@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,24 +11,36 @@ import 'package:movie_app/model/movie_response.dart';
 import 'package:movie_app/utils/app_const.dart';
 
 class MovieController extends GetxController {
+  final scrollController = ScrollController();
+
+  int pgnmbr = 0;
   RxList<AllMovies> movies = RxList<AllMovies>([]);
   RxList<String> genresName = RxList([]);
   List<Genres> genres = [];
   @override
   onInit() {
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+          scrollController.offset) {
+        fetchMovies(pgnmbr);
+        update();
+      }
+    });
     super.onInit();
-    fetchMovies();
+    fetchMovies(1);
     getGenreNames();
   }
 
-  Future<void> fetchMovies() async {
+  Future<void> fetchMovies(int page) async {
     final apiKey = dotenv.env['API_KEY']; // Access the API key from .env
-    final url = Uri.parse('$baseUrl?api_key=$apiKey');
+    final url = Uri.parse('$baseUrl?api_key=$apiKey&page=$page');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final decodedData = jsonDecode(response.body) as Map<String, dynamic>;
       final movieList = MovieResponse.fromJson(decodedData);
-      movies.value = movieList.results;
+      movies.addAll(movieList.results);
+      pgnmbr = movieList.page + 1;
+      log(pgnmbr.toString());
     } else {
       debugPrint(response.reasonPhrase);
     }
@@ -60,7 +73,6 @@ class MovieController extends GetxController {
     return genreNames;
   }
 
- 
   Future<String> getTrailerKey(int movieId) async {
     final apiKey = dotenv.env['API_KEY'];
 

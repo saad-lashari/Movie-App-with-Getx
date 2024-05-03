@@ -7,7 +7,9 @@ import 'package:movie_app/view/movie_detail/movie_details_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
+
   final controller = Get.put(MovieController());
+
   final dashcon = Get.put(DashbordController());
 
   @override
@@ -24,26 +26,36 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: Obx(() => ListView.separated(
+          controller: controller.scrollController,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           separatorBuilder: (context, index) => const SizedBox(
                 height: 10,
               ),
-          itemCount: controller.movies.length,
+          itemCount: controller.movies.length + 1,
           itemBuilder: ((context, index) {
             final movies = controller.movies;
-            return InkWell(
-              onTap: () {
-                final names = controller
-                    .getGenreNamesFromList(controller.movies[index].genreIds);
-                Get.to(() => MovieDetailsScreen(
-                      movie: movies[index],
-                      genres: names,
-                    ));
-              },
-              child: MainMovieCard(
-                movie: controller.movies[index],
-              ),
-            );
+            if (index < movies.length) {
+              return InkWell(
+                onTap: () {
+                  final names = controller
+                      .getGenreNamesFromList(controller.movies[index].genreIds);
+                  Get.to(() => MovieDetailsScreen(
+                        movie: movies[index],
+                        genres: names,
+                      ));
+                },
+                child: MainMovieCard(
+                  movie: controller.movies[index],
+                ),
+              );
+            } else {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           }))),
     );
   }

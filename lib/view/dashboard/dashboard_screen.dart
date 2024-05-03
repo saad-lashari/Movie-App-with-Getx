@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie_app/test.dart';
 import 'package:movie_app/view/home/home_screen.dart';
 import 'package:movie_app/view/search/search_screen.dart';
 
@@ -8,8 +9,7 @@ class DashbordScreen extends StatelessWidget {
   final controller = Get.put(DashbordController());
   final List<Widget> screens = [
     HomeScreen(), const SearchScreen(),
-    const Text('favorit'),
-    const Text('profiel')
+    TestScreen(), const Text('profiel')
     // HomeScreen(),
     // SearchScreen(),
     // AddScreen(),
