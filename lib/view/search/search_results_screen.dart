@@ -1,15 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/controller/movie_controller.dart';
+import 'package:movie_app/controller/home_controller.dart';
 import 'package:movie_app/controller/search_controller.dart';
 import 'package:movie_app/model/all_movies_model_class.dart';
 import 'package:movie_app/utils/app_const.dart';
 import 'package:movie_app/view/movie_detail/movie_details_screen.dart';
 
 class SearchResultScreen extends StatelessWidget {
-  SearchResultScreen({super.key});
-  final controller = Get.put(MovieController());
+  const SearchResultScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +36,25 @@ class SearchResultScreen extends StatelessWidget {
                   )
                 ],
               ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: con.searchList.length,
-                  itemBuilder: (context, index) {
-                    final list = con.searchList;
-                    return InkWell(
-                        onTap: () {
-                          final names = controller.getGenreNamesFromList(
-                              controller.movies[index].genreIds);
+              GetBuilder<MovieSearchController>(
+                builder: (con) => ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: con.searchList.length,
+                    itemBuilder: (context, index) {
+                      final list = con.searchList;
+                      return InkWell(
+                          onTap: () {
+                            final homeCon = Get.put(HomeController());
 
-                          Get.to(() => MovieDetailsScreen(
-                              movie: list[index], genres: names));
-                        },
-                        child: SearchReultCard(movie: list[index]));
-                  }),
+                            final names = homeCon.getGenreNamesFromList(
+                                homeCon.movies[index].genreIds);
+
+                            Get.to(() => MovieDetailsScreen(
+                                movie: list[index], genres: names));
+                          },
+                          child: SearchReultCard(movie: list[index]));
+                    }),
+              ),
             ],
           ),
         ),

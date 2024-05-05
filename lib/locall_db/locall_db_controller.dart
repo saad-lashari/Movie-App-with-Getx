@@ -6,16 +6,15 @@ import 'package:movie_app/model/all_movies_model_class.dart';
 import 'package:movie_app/model/genres_model_class.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPrefController extends GetxController {
+class LocallDatabaseController extends GetxController {
   late SharedPreferences _prefs;
 
   Future<void> saveMovieList(List<AllMovies> list) async {
-    // log('order saved===>');
+    // log('movies saved===>');
     _prefs = await SharedPreferences.getInstance();
     final List<String> serializedList =
         list.map((movie) => json.encode(movie.toJson())).toList();
     _prefs.setStringList('allMovies', serializedList);
-    log('done movie');
   }
 
   Future<List<AllMovies>> getMovieList() async {
@@ -37,6 +36,7 @@ class SharedPrefController extends GetxController {
     _prefs = await SharedPreferences.getInstance();
     final List<String> serializedList =
         list.map((entry) => json.encode(entry.toJson())).toList();
+
     _prefs.setStringList('genres', serializedList);
     log('done');
   }

@@ -7,6 +7,7 @@ class MainMovieCard extends StatelessWidget {
   const MainMovieCard({super.key, required this.movie});
 
   final AllMovies movie;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -21,6 +22,12 @@ class MainMovieCard extends StatelessWidget {
             fit: BoxFit.cover,
             imageUrl: '$imageUrl${movie.backdropPath}',
             placeholder: (context, url) => Center(
+              child: Icon(
+                Icons.image,
+                size: size.height * 0.1,
+              ),
+            ),
+            errorWidget: (context, url, error) => Center(
               child: Icon(
                 Icons.image,
                 size: size.height * 0.1,

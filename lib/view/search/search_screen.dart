@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/controller/movie_controller.dart';
+import 'package:movie_app/controller/home_controller.dart';
 import 'package:movie_app/controller/search_controller.dart';
 import 'package:movie_app/view/cards/main_movie_card.dart';
 import 'package:movie_app/view/cards/search_movie_card.dart';
@@ -34,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   onFieldSubmitted: (text) {
                     // Perform your action here, e.g., validate or submit the text
                     controller.searchMovie(searchController.text);
-                    Get.to(() => SearchResultScreen());
+                    Get.to(() => const SearchResultScreen());
                   },
                   onChanged: (val) {
                     controller.searchMovie(val);
@@ -82,7 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               return SearchMovieCard(movie: list[index]);
                             }),
                       )
-                    : GetBuilder<MovieController>(
+                    : GetBuilder<HomeController>(
                         builder: (con) => GridView.builder(
                             shrinkWrap: true,
                             itemCount: con.movies.length,

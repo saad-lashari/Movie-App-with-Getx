@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:movie_app/controller/home_controller.dart';
+import 'package:movie_app/controller/tmdb_api_controller.dart';
 import 'package:movie_app/locall_db/locall_db_controller.dart';
 import 'package:movie_app/view/dashboard/dashboard_screen.dart';
 
 void main() async {
   // Load environment variables before using the app
   await dotenv.load(fileName: '.env');
+  Get.put(LocallDatabaseController());
+
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
@@ -34,6 +38,7 @@ class MyApp extends StatelessWidget {
 class InitialBindings extends Bindings {
   @override
   void dependencies() {
-    Get.put(SharedPrefController());
+    Get.put(ApiController());
+    Get.put(HomeController());
   }
 }

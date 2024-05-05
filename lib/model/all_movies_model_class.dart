@@ -43,3 +43,24 @@ class AllMovies {
         'release_date': releaseDate,
       };
 }
+
+class Videos {
+  final String name;
+  final String key;
+  final String site;
+  final String type;
+
+  Videos({
+    required this.name,
+    required this.key,
+    required this.site,
+    required this.type,
+  });
+
+  factory Videos.fromJson(Map<String, dynamic> json) => Videos(
+        name: json['name'] as String,
+        key: json['key'] as String,
+        site: json['site'] as String,
+        type: json['type'] as String,
+      );
+}
