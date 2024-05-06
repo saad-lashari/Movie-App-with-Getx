@@ -3,7 +3,7 @@ import 'package:movie_app/model/genres_model_class.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:developer';
 
-class LocallDatabase {
+class LocalDatabase {
   static const String _tableName = 'movies_with_genres';
 
   static const String _movieId = 'movieId';

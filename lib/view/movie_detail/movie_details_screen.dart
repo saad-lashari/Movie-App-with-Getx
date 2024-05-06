@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/controller/tmdb_api_controller.dart';
+import 'package:movie_app/data/api_services.dart';
 import 'package:movie_app/model/all_movies_model_class.dart';
 import 'package:movie_app/utils/app_const.dart';
 import 'package:movie_app/view/player/player_screen.dart';
@@ -33,6 +33,12 @@ class MovieDetailsScreen extends StatelessWidget {
                     fit: BoxFit.cover,
                     imageUrl: '$imageUrl${movie.posterPath}',
                     placeholder: (context, url) => Center(
+                      child: Icon(
+                        Icons.image,
+                        size: size.height * 0.1,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Center(
                       child: Icon(
                         Icons.image,
                         size: size.height * 0.1,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/controller/tmdb_api_controller.dart';
+import 'package:movie_app/data/api_services.dart';
 import 'package:movie_app/model/genres_model_class.dart';
 import 'package:movie_app/model/all_movies_model_class.dart';
 

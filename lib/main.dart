@@ -3,13 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/controller/home_controller.dart';
+import 'package:movie_app/controller/search_controller.dart';
 import 'package:movie_app/data/locall_database.dart';
 import 'package:movie_app/view/dashboard/dashboard_screen.dart';
 
 void main() async {
   // Load environment variables before using the app
   await dotenv.load(fileName: '.env');
-  await LocallDatabase.createDatabase();
+  await LocalDatabase.createDatabase();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
@@ -37,5 +38,6 @@ class InitialBindings extends Bindings {
   @override
   void dependencies() {
     Get.put(HomeController());
+    Get.put(MovieSearchController());
   }
 }

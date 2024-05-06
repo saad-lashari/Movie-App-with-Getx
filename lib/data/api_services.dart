@@ -36,9 +36,9 @@ class ApiServices {
             .toList();
 
         for (final movieWithGenres in moviesWithGenres) {
-          if (!(await LocallDatabase.movieExists(movieWithGenres.id))) {
+          if (!(await LocalDatabase.movieExists(movieWithGenres.id))) {
             // Insert only if movie doesn't exist
-            await LocallDatabase.insertMovie(movieWithGenres);
+            await LocalDatabase.insertMovie(movieWithGenres);
           } else {
             // Handle duplicate movie (e.catch exists logic)
             debugPrint('Movie with ID ${movieWithGenres.id} already exists.');
@@ -50,13 +50,13 @@ class ApiServices {
       } else {
         // API call failed, handle with pre-existing data
         debugPrint('API call failed with status code: ${response.statusCode}');
-        final movies = await LocallDatabase.getAllMovies();
+        final movies = await LocalDatabase.getAllMovies();
         return movies; // Return data from local database if API fails
       }
     } catch (e) {
       debugPrint(e.toString());
       // Handle other exceptions (e.g., network issues)
-      final movies = await LocallDatabase.getAllMovies();
+      final movies = await LocalDatabase.getAllMovies();
       return movies; // Fallback to local data on exceptions
     }
   }
@@ -83,12 +83,12 @@ class ApiServices {
       } else {
         // API call failed, handle with pre-existing data
         debugPrint('API call failed with status code: ${response.statusCode}');
-        final movies = await LocallDatabase.getAllGenres();
+        final movies = await LocalDatabase.getAllGenres();
         return movies;
       }
     } catch (e) {
       debugPrint(e.toString());
-      final movies = await LocallDatabase.getAllGenres();
+      final movies = await LocalDatabase.getAllGenres();
       return movies;
     }
   }
@@ -96,7 +96,7 @@ class ApiServices {
   static Future<void> _saveGenresToLocalDb(List<Genres> genres) async {
     // Use LocallDatabase to insert genres
     for (final genre in genres) {
-      await LocallDatabase.insertGenre(genre);
+      await LocalDatabase.insertGenre(genre);
     }
   }
 
