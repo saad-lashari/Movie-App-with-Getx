@@ -86,8 +86,8 @@ class MovieDetailsScreen extends StatelessWidget {
                         CustomButton(
                           title: 'Watch Trailer',
                           onPressed: () async {
-                            final key = await Get.put(ApiController())
-                                .getTrailerKey(movie.id);
+                            final key =
+                                await ApiServices.getTrailerKey(movie.id);
                             Get.to(() => PlayScreen(
                                   videoId: key,
                                 ));

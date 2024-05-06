@@ -2,25 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:movie_app/locall_db/locall_db_controller.dart';
+import 'package:movie_app/data/locall_database.dart';
 import 'package:movie_app/model/all_movies_model_class.dart';
 import 'package:movie_app/model/genres_model_class.dart';
 import 'package:movie_app/model/movie_response.dart';
 import 'package:movie_app/utils/app_const.dart';
 
-class ApiController extends GetxController {
-  String? apiKey = dotenv.env['API_KEY'];
-  final dbController = Get.put(LocallDatabaseController());
-  @override
-  onInit() async {
-    super.onInit();
-    getComingSoonMovies(2);
-    getGenreNames();
-  }
+class ApiServices {
+  static Future<List<AllMovies>> getComingSoonMovies(int page) async {
+    String? apiKey = dotenv.env['API_KEY'];
 
-  Future<List<AllMovies>> getComingSoonMovies(int page) async {
     final url = Uri.parse('$baseUrl?api_key=$apiKey&page=$page');
 
     try {
@@ -29,43 +21,88 @@ class ApiController extends GetxController {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final movieresponse = MovieResponse.fromJson(data);
-        dbController.saveMovieList(movieresponse.results);
 
+        final moviesWithGenres = movieresponse.results
+            .map((movie) => AllMovies(
+                  id: movie.id,
+                  genreIds: movie.genreIds,
+                  title: movie.title,
+                  overview: movie.overview,
+                  posterPath: movie.posterPath,
+                  backdropPath: movie.backdropPath,
+                  releaseDate: movie
+                      .releaseDate, // Assuming genreIds is a list of integers
+                ))
+            .toList();
+
+        for (final movieWithGenres in moviesWithGenres) {
+          if (!(await LocallDatabase.movieExists(movieWithGenres.id))) {
+            // Insert only if movie doesn't exist
+            await LocallDatabase.insertMovie(movieWithGenres);
+          } else {
+            // Handle duplicate movie (e.catch exists logic)
+            debugPrint('Movie with ID ${movieWithGenres.id} already exists.');
+          }
+        }
+
+        // Return the original AllMovies objects for UI display
         return movieresponse.results;
       } else {
-        return [];
+        // API call failed, handle with pre-existing data
+        debugPrint('API call failed with status code: ${response.statusCode}');
+        final movies = await LocallDatabase.getAllMovies();
+        return movies; // Return data from local database if API fails
       }
     } catch (e) {
       debugPrint(e.toString());
-      return [];
+      // Handle other exceptions (e.g., network issues)
+      final movies = await LocallDatabase.getAllMovies();
+      return movies; // Fallback to local data on exceptions
     }
   }
 
-  Future<List<Genres>> getGenreNames() async {
-    List<Genres> list = [];
+  static Future<List<Genres>> getGenreNames() async {
+    String? apiKey = dotenv.env['API_KEY'];
+
     final url = Uri.parse('$genresUrl$apiKey&language=en-US');
+
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final genreslist = data['genres'];
+        final genresList = data['genres'] as List; // Cast to List<dynamic>
 
-        for (final Map<String, dynamic> genre in genreslist) {
-          list.add(Genres.fromJson(genre));
-        }
-        dbController.saveGenresList(list);
+        final genres =
+            genresList.map((genre) => Genres.fromJson(genre)).toList();
 
-        return list;
+        // Save genres to local database
+        await _saveGenresToLocalDb(genres);
+
+        return genres;
       } else {
-        return [];
+        // API call failed, handle with pre-existing data
+        debugPrint('API call failed with status code: ${response.statusCode}');
+        final movies = await LocallDatabase.getAllGenres();
+        return movies;
       }
     } catch (e) {
-      return [];
+      debugPrint(e.toString());
+      final movies = await LocallDatabase.getAllGenres();
+      return movies;
     }
   }
 
-  Future<String> getTrailerKey(int movieId) async {
+  static Future<void> _saveGenresToLocalDb(List<Genres> genres) async {
+    // Use LocallDatabase to insert genres
+    for (final genre in genres) {
+      await LocallDatabase.insertGenre(genre);
+    }
+  }
+
+  static Future<String> getTrailerKey(int movieId) async {
+    String? apiKey = dotenv.env['API_KEY'];
+
     final videoResponse = await http.get(
         Uri.parse('$videoUrl/$movieId/videos?api_key=$apiKey&language=en-US'));
     if (videoResponse.statusCode == 200) {

@@ -24,6 +24,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         body: GetBuilder<HomeController>(builder: (con) {
+          HomeController();
           if (con.movies.isEmpty) {
             return const Center(
               child: CircularProgressIndicator(),

@@ -1,18 +1,17 @@
+import 'package:get/get.dart';
+
 class AllMovies {
   final int id;
   final String title;
-  final String originalTitle;
   final String overview;
   final String posterPath;
   final String backdropPath;
-
   final List<int> genreIds;
   final String releaseDate;
 
   AllMovies({
     required this.id,
     required this.title,
-    required this.originalTitle,
     required this.overview,
     required this.posterPath,
     required this.backdropPath,
@@ -23,7 +22,6 @@ class AllMovies {
   factory AllMovies.fromJson(Map<String, dynamic> json) => AllMovies(
         id: json['id'] as int,
         title: json['title'] as String,
-        originalTitle: json['original_title'] as String,
         overview: json['overview'] as String,
         posterPath: json['poster_path'] as String,
         backdropPath: json['backdrop_path'] as String,
@@ -35,7 +33,6 @@ class AllMovies {
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
-        'original_title': originalTitle,
         'overview': overview,
         'poster_path': posterPath,
         'backdrop_path': backdropPath,
@@ -64,3 +61,22 @@ class Videos {
         type: json['type'] as String,
       );
 }
+
+// class MovieWithGenres {
+//   final int id;
+//   final String title;
+//   final String overview;
+//   final String posterPath;
+//   final String backdropPath;
+//   final String releaseDate;
+//   final List<int> genreIds;
+
+//   MovieWithGenres(
+//       {required this.id,
+//       required this.title,
+//       required this.overview,
+//       required this.posterPath,
+//       required this.backdropPath,
+//       required this.releaseDate,
+//       required this.genreIds});
+// }
