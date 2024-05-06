@@ -1,5 +1,3 @@
-import 'package:get/get.dart';
-
 class AllMovies {
   final int id;
   final String title;

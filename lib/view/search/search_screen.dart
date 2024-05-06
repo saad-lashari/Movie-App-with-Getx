@@ -4,6 +4,7 @@ import 'package:movie_app/controller/home_controller.dart';
 import 'package:movie_app/controller/search_controller.dart';
 import 'package:movie_app/view/cards/main_movie_card.dart';
 import 'package:movie_app/view/cards/search_movie_card.dart';
+import 'package:movie_app/view/search/search_results_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -30,8 +31,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: TextFormField(
                   controller: searchController,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) =>
-                      movieSearchController.searchMovie(searchController.text),
+                  onFieldSubmitted: (_) {
+                    Get.to(() => const SearchResultScreen());
+                  },
+
                   onChanged: (val) => movieSearchController
                       .searchMovie(val), // Update on each keystroke
                   onTap: () => movieSearchController
